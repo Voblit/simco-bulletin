@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Simco Bulletin Archive</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333333; /* Dark Grey */
+            background-color: #f9f9f9;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header Style */
+        header {
+            background-color: #ffffff;
+            padding: 40px 20px;
+            border-bottom: 2px solid #eeeeee;
+            position: relative;
+        }
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2.5rem;
+            color: #000000; /* Oswald Black */
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Corner Image */
+        .corner-logo {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 80px; /* Adjust size as needed */
+            height: auto;
+        }
+
+        /* Main Content Area */
+        main {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .archive-section {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-family: 'Oswald', sans-serif;
+            color: #000000;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        /* Archive Links */
+        .issue-list {
+            list-style: none;
+        }
+        .issue-list li {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .issue-list a {
+            color: #333333;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .issue-list a:hover {
+            color: #6200ee; /* Purple tint on hover */
+            text-decoration: underline;
+        }
+        .issue-date {
+            font-size: 0.9rem;
+            color: #777777;
+            margin-left: 10px;
+        }
+
+        /* Purple Footer */
+        footer {
+            background-color: #6200ee; /* Purple */
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>The Simco Bulletin</h1>
+        <img src="logo.png" alt="Simco Bulletin Logo" class="corner-logo">
+    </header>
+
+    <main>
+        <div class="archive-section">
+            <h2>Recent Issues</h2>
+            <ul class="issue-list">
+                <li>
+                    <a href="issue3.pdf">Volume 3</a>
+                    <span class="issue-date">— May 17th, 2026</span>
+                </li>
+                <li>
+                    <a href="issue2.pdf">Volume 2</a>
+                    <span class="issue-date">— May 4th, 2026</span>
+                </li>
+                <li>
+                    <a href="issue1.pdf">Volume 1</a>
+                    <span class="issue-date">— ???</span>
+                </li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 The Simco Bulletin. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html
