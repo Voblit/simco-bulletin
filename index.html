@@ -4,129 +4,182 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Simco Bulletin Archive</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
-        /* Reset and Base Styles */
+        /* Modern CSS Reset & Variable Defaults */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
         body {
             font-family: 'Roboto', sans-serif;
-            color: #333333; /* Dark Grey */
-            background-color: #f9f9f9;
+            color: #2d3142; /* Deep Dark Grey */
+            background-color: #f4f5f6;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            line-height: 1.5;
         }
 
-        /* Header Style */
+        /* Fixed Corner Logo Layout */
         header {
             background-color: #ffffff;
-            padding: 40px 20px;
-            border-bottom: 2px solid #eeeeee;
+            padding: 50px 24px;
+            border-bottom: 4px solid #000000;
             position: relative;
+            text-align: center;
         }
+
         h1 {
             font-family: 'Oswald', sans-serif;
-            font-size: 2.5rem;
+            font-size: 3.5rem;
             color: #000000; /* Oswald Black */
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            line-height: 1.1;
         }
 
-        /* Corner Image */
         .corner-logo {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            width: 80px; /* Adjust size as needed */
-            height: auto;
+            top: 0;
+            right: 0;
+            width: 110px; /* Enhanced presence */
+            height: 110px;
+            object-fit: cover;
+            border-left: 2px solid #000000;
+            border-bottom: 2px solid #000000;
         }
 
-        /* Main Content Area */
+        /* Main Content Container */
         main {
             flex: 1;
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
-            margin: 0 auto;
-            padding: 40px 20px;
+            margin: 40px auto;
+            padding: 0 24px;
         }
 
-        .archive-section {
-            margin-bottom: 30px;
-        }
-
-        h2 {
+        .archive-section h2 {
             font-family: 'Oswald', sans-serif;
             color: #000000;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 8px;
+            display: inline-block;
         }
 
-        /* Archive Links */
+        /* Premium Card-Style List */
         .issue-list {
             list-style: none;
-        }
-        .issue-list li {
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        .issue-list a {
-            color: #333333;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        .issue-list a:hover {
-            color: #6200ee; /* Purple tint on hover */
-            text-decoration: underline;
-        }
-        .issue-date {
-            font-size: 0.9rem;
-            color: #777777;
-            margin-left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
-        /* Purple Footer */
+        .issue-list li {
+            background: #ffffff;
+            border: 1px solid #e1e4e6;
+            border-radius: 6px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .issue-list li:hover {
+            transform: translateY(-2px);
+            border-color: #6200ee;
+            box-shadow: 0 6px 12px rgba(98, 0, 238, 0.08);
+        }
+
+        .issue-link-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .issue-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #000000;
+            transition: color 0.2s ease;
+        }
+
+        .issue-list li:hover .issue-title {
+            color: #6200ee; /* Shifts to purple on hover */
+        }
+
+        .issue-date {
+            font-size: 0.95rem;
+            color: #6c757d;
+            font-weight: 500;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        /* Elegant Purple Footer */
         footer {
-            background-color: #6200ee; /* Purple */
+            background-color: #6200ee; /* Deep Rich Purple */
             color: #ffffff;
             text-align: center;
-            padding: 20px;
+            padding: 24px;
             font-size: 0.9rem;
-            margin-top: auto;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            border-top: 4px solid #4a00b8;
+        }
+
+        /* Responsive scaling for smaller mobile screens */
+        @media (max-width: 600px) {
+            h1 { font-size: 2.2rem; text-align: left; max-width: 70%; }
+            .corner-logo { width: 80px; height: 80px; }
+            header { padding: 30px 16px; text-align: left; }
+            .issue-link-wrapper { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>The Simco Bulletin</h1>
+        <h1>The Simco<br>Bulletin</h1>
         <img src="unnamed.png" alt="Simco Bulletin Logo" class="corner-logo">
     </header>
 
     <main>
-        <div class="archive-section">
-            <h2>Recent Issues</h2>
+        <section class="archive-section">
+            <h2>Archived Issues</h2>
             <ul class="issue-list">
                 <li>
-                    <a href="issue3.pdf">Volume 3</a>
-                    <span class="issue-date">— May 17th, 2026</span>
+                    <a href="issue3.pdf" class="issue-link-wrapper">
+                        <span class="issue-title">Volume 3</span>
+                        <span class="issue-date">May 17th, 2026</span>
+                    </a>
                 </li>
                 <li>
-                    <a href="issue2.pdf">Volume 2</a>
-                    <span class="issue-date">— May 4th, 2026</span>
+                    <a href="issue2.pdf" class="issue-link-wrapper">
+                        <span class="issue-title">Volume 2</span>
+                        <span class="issue-date">May 4th, 2026</span>
+                    </a>
                 </li>
                 <li>
-                    <a href="issue1.pdf">Volume 1</a>
-                    <span class="issue-date">— ???</span>
+                    <a href="issue1.pdf" class="issue-link-wrapper">
+                        <span class="issue-title">Volume 1</span>
+                        <span class="issue-date">Unknown Date</span>
+                    </a>
                 </li>
             </ul>
-        </div>
+        </section>
     </main>
 
     <footer>
@@ -134,4 +187,4 @@
     </footer>
 
 </body>
-</html
+</html>
