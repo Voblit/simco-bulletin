@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        
         * {
             margin: 0;
             padding: 0;
@@ -19,7 +18,7 @@
         
         body {
             font-family: 'Roboto', sans-serif;
-            color: #2d3142; 
+            color: #2d3142; /* Dark Grey */
             background-color: #f4f5f6;
             display: flex;
             flex-direction: column;
@@ -27,7 +26,6 @@
             line-height: 1.5;
         }
 
-        
         header {
             background-color: #ffffff;
             padding: 50px 24px;
@@ -45,7 +43,6 @@
             max-width: 70%; 
         }
 
-        
         .corner-logo {
             position: absolute;
             top: 0;
@@ -55,7 +52,6 @@
             object-fit: cover;
         }
 
-        
         main {
             flex: 1;
             max-width: 900px;
@@ -64,7 +60,8 @@
             padding: 0 24px;
         }
 
-        .archive-section h2 {
+        /* Section Header Styles */
+        .about-section h2, .archive-section h2 {
             font-family: 'Oswald', sans-serif;
             color: #000000;
             font-size: 1.8rem;
@@ -76,7 +73,23 @@
             display: inline-block;
         }
 
-        
+        /* About Us Paragraph Styling */
+        .about-section {
+            margin-bottom: 40px;
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            color: #2d3142; /* Dark Grey */
+            max-width: 750px;
+            line-height: 1.6;
+        }
+
+        /* Archive Items */
+        .archive-section {
+            margin-bottom: 30px;
+        }
+
         .issue-list {
             list-style: none;
             display: flex;
@@ -127,9 +140,8 @@
             border: 1px solid #e9ecef;
         }
 
-        
         footer {
-            background-color: #6200ee; 
+            background-color: #6200ee; /* Purple */
             color: #ffffff;
             text-align: center;
             padding: 24px;
@@ -140,7 +152,11 @@
             margin-top: auto;
         }
 
-        
+        footer a {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
         @media (max-width: 600px) {
             h1 { font-size: 2.2rem; }
             .corner-logo { width: 80px; }
@@ -156,6 +172,13 @@
     </header>
 
     <main>
+        <section class="about-section">
+            <h2>Who We Are</h2>
+            <p class="about-text">
+                Welcome to the official repository of The Simco Bulletin. We are a unoffical outlet of media with information on the popular economics simulation game <a href="https://www.simcompanies.com/">SimCompanies</a>. Our mission is to bring fully informative (and sometimes silly) content about the game. Our schedule is bi-weekly.
+            </p>
+        </section>
+
         <section class="archive-section">
             <h2>Archived Issues</h2>
             <ul class="issue-list">
@@ -182,7 +205,7 @@
     </main>
 
     <footer>
-        <p>&copy; 2026 The Simco Bulletin. All Rights Reserved.</p>
+        <p>&copy; 2026 The Simco Bulletin. All Rights Reserved. Made with ♡&☆ by yaboy <a href="https://voblit.vercel.app" target="_blank">Voblit</a></p>
     </footer>
 
 </body>
