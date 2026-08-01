@@ -62,7 +62,7 @@
             padding: 0 24px;
         }
 
-        .about-section h2, .latest-section h2, .archive-section h2, .viewer-section h2 {
+        .about-section h2, .latest-section h2, .archive-section h2 {
             font-family: 'Oswald', sans-serif;
             color: #000000;
             font-size: 1.8rem;
@@ -131,57 +131,93 @@
             background-color: #4a00b8;
         }
 
-        /* Embedded PDF Viewer Styles */
-        .viewer-section {
+        /* --- Fullscreen PDF Modal Styles --- */
+        .pdf-fullscreen-modal {
             display: none;
-            margin-bottom: 40px;
-            background: #ffffff;
-            border: 2px solid #000000;
-            border-radius: 8px;
-            padding: 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #1a1a1a;
+            z-index: 99999;
+            flex-direction: column;
         }
 
-        .viewer-section.active {
-            display: block;
+        .pdf-fullscreen-modal.active {
+            display: flex;
         }
 
-        .viewer-header {
+        .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            padding: 12px 20px;
+            background-color: #000000;
+            color: #ffffff;
+            border-bottom: 2px solid #333333;
+            z-index: 10;
+        }
+
+        .modal-header h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .close-btn {
-            background: #dc3545;
-            color: #fff;
+            background: #6200ee;
+            color: #ffffff;
             border: none;
             padding: 8px 16px;
             border-radius: 4px;
             font-family: 'Oswald', sans-serif;
             cursor: pointer;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
-        #pdf-canvas-container {
-            width: 100%;
+        .close-btn:hover {
+            background-color: #4a00b8;
+        }
+
+        .modal-body {
+            flex: 1;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
-            overflow-x: auto;
-            background: #e1e4e6;
-            padding: 16px;
-            border-radius: 6px;
+            gap: 20px;
+            padding: 20px 10px;
+            background-color: #2a2a2a;
+            -webkit-overflow-scrolling: touch;
         }
 
-        canvas {
-            max-width: 100%;
+        .modal-body canvas {
+            width: 100% !important;
+            max-width: 900px;
             height: auto !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
             background: #ffffff;
+            border-radius: 4px;
         }
 
+        .loader-text {
+            color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            margin-top: 40px;
+            font-size: 1.1rem;
+        }
+
+        /* --- Archive Section --- */
         .archive-section {
             margin-bottom: 30px;
         }
@@ -278,15 +314,6 @@
             </p>
         </section>
 
-        <section class="viewer-section" id="viewer-section">
-            <div class="viewer-header">
-                <h2 id="active-pdf-title">Reading Issue</h2>
-                <button class="close-btn" id="close-viewer-btn">Close Reader ✕</button>
-            </div>
-            <div id="pdf-canvas-container">
-                </div>
-        </section>
-
         <section class="latest-section">
             <h2>Latest Issue</h2>
             <div class="latest-box">
@@ -353,12 +380,20 @@
         </section>
     </main>
 
+    <div class="pdf-fullscreen-modal" id="pdfModal">
+        <div class="modal-header">
+            <h2 id="modalPdfTitle">Reading Issue</h2>
+            <button class="close-btn" id="closeModalBtn">Close ✕</button>
+        </div>
+        <div class="modal-body" id="modalCanvasContainer">
+            </div>
+    </div>
+
     <footer>
         <p>&copy; 2026 The Simco Bulletin. All Rights Reserved. Made with ♡&☆ by yaboy <a href="https://voblit.vercel.app" target="_blank">Voblit</a></p>
     </footer>
 
     <script>
-        // Configure PDF.js Worker location
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
         document.addEventListener("DOMContentLoaded", function() {
@@ -375,72 +410,15 @@
                 document.getElementById("latest-url").setAttribute("data-pdf", fileUrl);
             }
 
-            const viewerSection = document.getElementById("viewer-section");
-            const container = document.getElementById("pdf-canvas-container");
-            const activeTitle = document.getElementById("active-pdf-title");
-            const closeBtn = document.getElementById("close-viewer-btn");
+            const modal = document.getElementById("pdfModal");
+            const container = document.getElementById("modalCanvasContainer");
+            const modalTitle = document.getElementById("modalPdfTitle");
+            const closeBtn = document.getElementById("closeModalBtn");
 
-            // Function to render PDF inline on page using PDF.js
-            async function renderPdfInline(pdfUrl, title) {
-                viewerSection.classList.add("active");
-                activeTitle.textContent = title;
-                container.innerHTML = "<p>Loading document directly into page...</p>";
-                
-                // Scroll smoothly to viewer
-                viewerSection.scrollIntoView({ behavior: 'smooth' });
+            async function openPdfFullscreen(pdfUrl, title) {
+                modalTitle.textContent = title;
+                container.innerHTML = "<p class='loader-text'>Loading issue into reader...</p>";
+                modal.classList.add("active");
+                document.body.style.overflow = "hidden"; // Disable underlying page scroll
 
                 try {
-                    const loadingTask = pdfjsLib.getDocument(pdfUrl);
-                    const pdf = await loadingTask.promise;
-                    container.innerHTML = ""; // Clear loader message
-
-                    // Render every page onto standard HTML canvas tags
-                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                        const page = await pdf.getPage(pageNum);
-                        const scale = 1.5;
-                        const viewport = page.getViewport({ scale: scale });
-
-                        const canvas = document.createElement("canvas");
-                        const context = canvas.getContext("2d");
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-
-                        container.appendChild(canvas);
-
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        await page.render(renderContext).promise;
-                    }
-                } catch (err) {
-                    console.error(err);
-                    container.innerHTML = "<p style='color:red;'>Could not load PDF. Please make sure the PDF file exists on the server.</p>";
-                }
-            }
-
-            // Click handling
-            document.addEventListener("click", function(e) {
-                const trigger = e.target.closest(".pdf-trigger");
-                if (trigger) {
-                    e.preventDefault();
-                    const pdfUrl = trigger.getAttribute("data-pdf");
-                    const title = trigger.querySelector(".issue-title") 
-                        ? trigger.querySelector(".issue-title").textContent 
-                        : document.getElementById("latest-title").textContent;
-                    
-                    if (pdfUrl) {
-                        renderPdfInline(pdfUrl, title);
-                    }
-                }
-            });
-
-            closeBtn.addEventListener("click", function() {
-                viewerSection.classList.remove("active");
-                container.innerHTML = "";
-            });
-        });
-    </script>
-
-</body>
-</html>
