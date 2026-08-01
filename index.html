@@ -403,6 +403,8 @@
                 const targetLink = newestItem.querySelector(".issue-link-wrapper");
                 const titleText = newestItem.querySelector(".issue-title").textContent;
                 const dateText = newestItem.querySelector(".issue-date").textContent;
+                
+                // Read from data-pdf attribute instead of href
                 const fileUrl = targetLink.getAttribute("data-pdf");
 
                 document.getElementById("latest-title").textContent = titleText;
@@ -419,6 +421,64 @@
                 modalTitle.textContent = title;
                 container.innerHTML = "<p class='loader-text'>Loading issue into reader...</p>";
                 modal.classList.add("active");
-                document.body.style.overflow = "hidden"; // Disable underlying page scroll
+                document.body.style.overflow = "hidden";
 
                 try {
+                    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                    const pdf = await loadingTask.promise;
+                    container.innerHTML = ""; 
+
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        const page = await pdf.getPage(pageNum);
+                        const scale = 2; 
+                        const viewport = page.getViewport({ scale: scale });
+
+                        const canvas = document.createElement("canvas");
+                        const context = canvas.getContext("2d");
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        container.appendChild(canvas);
+
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        await page.render(renderContext).promise;
+                    }
+                } catch (err) {
+                    console.error(err);
+                    container.innerHTML = "<p class='loader-text' style='color:#ff6b6b;'>Failed to render PDF file. Check file path.</p>";
+                }
+            }
+
+            function closeModal() {
+                modal.classList.remove("active");
+                container.innerHTML = "";
+                document.body.style.overflow = "auto";
+            }
+
+            document.addEventListener("click", function(e) {
+                const trigger = e.target.closest(".pdf-trigger");
+                if (trigger) {
+                    e.preventDefault();
+                    const pdfUrl = trigger.getAttribute("data-pdf");
+                    
+                    // Grab the issue title or fall back to current latest title
+                    const titleEl = trigger.querySelector(".issue-title");
+                    const title = titleEl 
+                        ? titleEl.textContent 
+                        : document.getElementById("latest-title").textContent;
+                    
+                    if (pdfUrl) {
+                        openPdfFullscreen(pdfUrl, title);
+                    }
+                }
+            });
+
+            closeBtn.addEventListener("click", closeModal);
+        });
+    </script>
+
+</body>
+</html>
