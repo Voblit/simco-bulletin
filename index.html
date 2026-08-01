@@ -9,6 +9,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -60,7 +62,7 @@
             padding: 0 24px;
         }
 
-        .about-section h2, .latest-section h2, .archive-section h2 {
+        .about-section h2, .latest-section h2, .archive-section h2, .viewer-section h2 {
             font-family: 'Oswald', sans-serif;
             color: #000000;
             font-size: 1.8rem;
@@ -122,10 +124,62 @@
             font-size: 1.1rem;
             transition: background-color 0.2s ease;
             cursor: pointer;
+            border: none;
         }
 
         .latest-btn:hover {
             background-color: #4a00b8;
+        }
+
+        /* Embedded PDF Viewer Styles */
+        .viewer-section {
+            display: none;
+            margin-bottom: 40px;
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            padding: 24px;
+        }
+
+        .viewer-section.active {
+            display: block;
+        }
+
+        .viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .close-btn {
+            background: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Oswald', sans-serif;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        #pdf-canvas-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            overflow-x: auto;
+            background: #e1e4e6;
+            padding: 16px;
+            border-radius: 6px;
+        }
+
+        canvas {
+            max-width: 100%;
+            height: auto !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            background: #ffffff;
         }
 
         .archive-section {
@@ -183,54 +237,6 @@
             border: 1px solid #e9ecef;
         }
 
-        /* PDF Viewer Modal Styling */
-        .pdf-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: rgba(0,0,0,0.85);
-            z-index: 9999;
-            flex-direction: column;
-        }
-
-        .pdf-modal.active {
-            display: flex;
-        }
-
-        .pdf-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 20px;
-            background-color: #000;
-            color: #fff;
-        }
-
-        .pdf-modal-close {
-            background: #6200ee;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .pdf-modal-body {
-            flex: 1;
-            width: 100%;
-            height: 100%;
-        }
-
-        .pdf-modal-body iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
         footer {
             background-color: #6200ee; 
             color: #ffffff;
@@ -272,6 +278,15 @@
             </p>
         </section>
 
+        <section class="viewer-section" id="viewer-section">
+            <div class="viewer-header">
+                <h2 id="active-pdf-title">Reading Issue</h2>
+                <button class="close-btn" id="close-viewer-btn">Close Reader ✕</button>
+            </div>
+            <div id="pdf-canvas-container">
+                </div>
+        </section>
+
         <section class="latest-section">
             <h2>Latest Issue</h2>
             <div class="latest-box">
@@ -279,7 +294,7 @@
                     <h3 id="latest-title">Loading latest issue...</h3>
                     <p id="latest-date"></p>
                 </div>
-                <a href="#" id="latest-url" class="latest-btn pdf-trigger">Read Current Issue</a>
+                <button id="latest-url" class="latest-btn pdf-trigger">Read Current Issue</button>
             </div>
         </section>
 
@@ -287,49 +302,49 @@
             <h2>Archived Issues</h2>
             <ul class="issue-list" id="archive-list">
                 <li>
-                    <a href="issue8.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue8.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 8</span>
                         <span class="issue-date">July 28th, 2026</span>
                     </a>
                 </li>
                 <li>
-                    <a href="issue7.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue7.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 7</span>
                         <span class="issue-date">July 12th, 2026</span>
                     </a>
                 </li>
                  <li>
-                    <a href="issue6.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue6.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 6</span>
                         <span class="issue-date">June 28th, 2026</span>
                     </a>
                 </li>
                 <li>
-                    <a href="issue5.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue5.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 5</span>
                         <span class="issue-date">June 14th, 2026</span>
                     </a>
                 </li>
                 <li>
-                    <a href="issue4.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue4.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 4</span>
                         <span class="issue-date">May 31th, 2026</span>
                     </a>
                 </li>
                 <li>
-                    <a href="issue3.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue3.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 3</span>
                         <span class="issue-date">May 17th, 2026</span>
                     </a>
                 </li>
                 <li>
-                    <a href="issue2.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue2.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 2</span>
                         <span class="issue-date">May 4th, 2026</span>
                     </a>
                 </li>
                 <li>
-                    <a href="issue1.pdf" class="issue-link-wrapper pdf-trigger">
+                    <a data-pdf="issue1.pdf" class="issue-link-wrapper pdf-trigger">
                         <span class="issue-title">Volume 1</span>
                         <span class="issue-date">Unknown Date</span>
                     </a>
@@ -338,21 +353,14 @@
         </section>
     </main>
 
-    <div class="pdf-modal" id="pdfModal">
-        <div class="pdf-modal-header">
-            <span id="pdfModalTitle">PDF Viewer</span>
-            <button class="pdf-modal-close" id="pdfCloseBtn">Close ✕</button>
-        </div>
-        <div class="pdf-modal-body">
-            <iframe id="pdfFrame" src=""></iframe>
-        </div>
-    </div>
-
     <footer>
         <p>&copy; 2026 The Simco Bulletin. All Rights Reserved. Made with ♡&☆ by yaboy <a href="https://voblit.vercel.app" target="_blank">Voblit</a></p>
     </footer>
 
     <script>
+        // Configure PDF.js Worker location
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
         document.addEventListener("DOMContentLoaded", function() {
             const newestItem = document.querySelector("#archive-list li:first-child");
             
@@ -360,48 +368,77 @@
                 const targetLink = newestItem.querySelector(".issue-link-wrapper");
                 const titleText = newestItem.querySelector(".issue-title").textContent;
                 const dateText = newestItem.querySelector(".issue-date").textContent;
-                const fileUrl = targetLink.getAttribute("href");
+                const fileUrl = targetLink.getAttribute("data-pdf");
 
                 document.getElementById("latest-title").textContent = titleText;
                 document.getElementById("latest-date").textContent = "Published: " + dateText;
-                document.getElementById("latest-url").setAttribute("href", fileUrl);
+                document.getElementById("latest-url").setAttribute("data-pdf", fileUrl);
             }
 
-            // In-page PDF Modal logic
-            const modal = document.getElementById("pdfModal");
-            const iframe = document.getElementById("pdfFrame");
-            const modalTitle = document.getElementById("pdfModalTitle");
-            const closeBtn = document.getElementById("pdfCloseBtn");
+            const viewerSection = document.getElementById("viewer-section");
+            const container = document.getElementById("pdf-canvas-container");
+            const activeTitle = document.getElementById("active-pdf-title");
+            const closeBtn = document.getElementById("close-viewer-btn");
 
-            function openPdf(url, title) {
-                // If hosted on a public server, Google Docs Viewer renders it inline reliably on mobile:
-                // iframe.src = "https://docs.google.com/viewer?embedded=true&url=" + encodeURIComponent(window.location.origin + "/" + url);
+            // Function to render PDF inline on page using PDF.js
+            async function renderPdfInline(pdfUrl, title) {
+                viewerSection.classList.add("active");
+                activeTitle.textContent = title;
+                container.innerHTML = "<p>Loading document directly into page...</p>";
                 
-                // Native direct embed fallback:
-                iframe.src = url; 
-                modalTitle.textContent = title || "Viewing Bulletin";
-                modal.classList.add("active");
-                document.body.style.overflow = "hidden";
-            }
+                // Scroll smoothly to viewer
+                viewerSection.scrollIntoView({ behavior: 'smooth' });
 
-            function closePdf() {
-                modal.classList.remove("active");
-                iframe.src = "";
-                document.body.style.overflow = "auto";
-            }
+                try {
+                    const loadingTask = pdfjsLib.getDocument(pdfUrl);
+                    const pdf = await loadingTask.promise;
+                    container.innerHTML = ""; // Clear loader message
 
-            document.querySelectorAll(".pdf-trigger").forEach(link => {
-                link.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    const pdfUrl = this.getAttribute("href");
-                    const title = this.querySelector(".issue-title") ? this.querySelector(".issue-title").textContent : "Latest Issue";
-                    if (pdfUrl && pdfUrl !== "#") {
-                        openPdf(pdfUrl, title);
+                    // Render every page onto standard HTML canvas tags
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        const page = await pdf.getPage(pageNum);
+                        const scale = 1.5;
+                        const viewport = page.getViewport({ scale: scale });
+
+                        const canvas = document.createElement("canvas");
+                        const context = canvas.getContext("2d");
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        container.appendChild(canvas);
+
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport
+                        };
+                        await page.render(renderContext).promise;
                     }
-                });
+                } catch (err) {
+                    console.error(err);
+                    container.innerHTML = "<p style='color:red;'>Could not load PDF. Please make sure the PDF file exists on the server.</p>";
+                }
+            }
+
+            // Click handling
+            document.addEventListener("click", function(e) {
+                const trigger = e.target.closest(".pdf-trigger");
+                if (trigger) {
+                    e.preventDefault();
+                    const pdfUrl = trigger.getAttribute("data-pdf");
+                    const title = trigger.querySelector(".issue-title") 
+                        ? trigger.querySelector(".issue-title").textContent 
+                        : document.getElementById("latest-title").textContent;
+                    
+                    if (pdfUrl) {
+                        renderPdfInline(pdfUrl, title);
+                    }
+                }
             });
 
-            closeBtn.addEventListener("click", closePdf);
+            closeBtn.addEventListener("click", function() {
+                viewerSection.classList.remove("active");
+                container.innerHTML = "";
+            });
         });
     </script>
 
